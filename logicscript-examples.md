@@ -47,6 +47,8 @@ These examples are written for non-programmers. Each one is a complete, usable L
 
 The simplest possible spec — a function that takes a name and returns a greeting.
 
+> *Prompt: "Implement this LogicScript specification in your preferred language or framework."*
+
 ```logicscript
 FUNC greet(name)
   --- Returns a personalised greeting. ---
@@ -68,6 +70,8 @@ FUNC greet(name)
 ### 2. Contact form submission
 
 A contact form that validates the submission and sends it to the right team.
+
+> *Prompt: "Implement this LogicScript specification in your preferred language or framework."*
 
 ```logicscript
 SHAPE ContactMessage
@@ -106,6 +110,8 @@ ON ContactFormSubmitted
 ### 3. Book a meeting room
 
 A booking system that checks availability before confirming a reservation.
+
+> *Prompt: "Implement this LogicScript specification in your preferred language or framework."*
 
 ```logicscript
 SHAPE RoomBooking
@@ -146,6 +152,8 @@ ON RoomBooked
 ### 4. Submit an expense report
 
 An expense approval workflow with basic validation and manager notification.
+
+> *Prompt: "Implement this LogicScript specification in your preferred language or framework."*
 
 ```logicscript
 SHAPE ExpenseReport
@@ -189,6 +197,8 @@ ON ExpenseSubmitted
 ### 5. Publish a blog post
 
 A content publishing workflow with draft → review → published status tracking.
+
+> *Prompt: "Implement this LogicScript specification in your preferred language or framework."*
 
 ```logicscript
 SHAPE BlogPost
@@ -249,6 +259,8 @@ ON PostPublished
 
 An inventory rule that fires automatically when stock drops below a threshold.
 
+> *Prompt: "Implement this LogicScript specification in your preferred language or framework."*
+
 ```logicscript
 SHAPE Product
   id          : UUID    required auto
@@ -292,6 +304,8 @@ ON LowStock
 
 A multi-step process that runs when a new employee joins.
 
+> *Prompt: "Implement this LogicScript specification in your preferred language or framework."*
+
 ```logicscript
 FLOW OnboardNewEmployee(employeeId)
   --- Runs all onboarding steps when HR activates a new employee record. ---
@@ -331,6 +345,8 @@ ON EmployeeOnboarded
 ### 8. Invoice status machine
 
 A status workflow that controls how an invoice moves through its lifecycle.
+
+> *Prompt: "Implement this LogicScript specification in your preferred language or framework."*
 
 ```logicscript
 SHAPE Invoice
@@ -395,6 +411,8 @@ SCHEDULE checkOverdueInvoices
 ### 9. Ticket support system
 
 A basic helpdesk ticket tracker with assignment and escalation.
+
+> *Prompt: "Implement this LogicScript specification in your preferred language or framework."*
 
 ```logicscript
 SHAPE SupportTicket
@@ -471,6 +489,8 @@ POLICY EscalationPolicy
 ### 10. Monthly billing schedule
 
 A recurring billing job that runs on the first of each month.
+
+> *Prompt: "Implement this LogicScript specification in your preferred language or framework."*
 
 ```logicscript
 SHAPE Subscription
@@ -559,6 +579,8 @@ JavaScript output targets Node.js with ES modules and `async`/`await`. `SHAPE` b
 
 ## Example: createUser
 
+> *Prompt: "Implement this LogicScript specification in JavaScript (Node.js)."*
+
 ```logicscript
 FUNC createUser(email, password, name)
   VALIDATE
@@ -621,6 +643,8 @@ export async function createUser(email, password, name) {
 
 ## Example: parallel FLOW
 
+> *Prompt: "Implement this LogicScript specification in JavaScript (Node.js)."*
+
 ```logicscript
 FLOW GenerateDashboard(userId)
   PARALLEL
@@ -675,6 +699,8 @@ Python output follows idiomatic Python 3.11+ conventions. `SHAPE` becomes a `@da
 | @cached | `functools.lru_cache`, `cachetools`, or Redis |
 
 ## Example: createUser
+
+> *Prompt: "Implement this LogicScript specification in Python."*
 
 ```logicscript
 FUNC createUser(email, password, name)
@@ -813,6 +839,8 @@ SQL output covers two complementary concerns: **schema DDL** derived from `SHAPE
 
 The following `SHAPE` produces a `CREATE TABLE` statement with appropriate column types, constraints, and defaults.
 
+> *Prompt: "Implement this LogicScript specification in SQL (PostgreSQL)."*
+
 ```logicscript
 SHAPE User
   id        : UUID      required auto
@@ -839,6 +867,8 @@ CREATE INDEX idx_users_role  ON users (role);
 ```
 
 ## Example: createUser FUNC → stored procedure
+
+> *Prompt: "Implement this LogicScript specification in SQL (PostgreSQL)."*
 
 ```logicscript
 FUNC createUser(email, password, name)
@@ -1427,6 +1457,8 @@ The following examples show the same LogicScript specification compiled to all s
 
 The following LogicScript is used as input for both output examples below.
 
+> *Prompt: "Implement this LogicScript specification in [your target language]."*
+
 ```logicscript
 SHAPE User
   id        : UUID      required auto
@@ -1699,6 +1731,8 @@ User UserService::create_user(
 
 ## Example: transferFunds function
 
+> *Prompt: "Implement this LogicScript specification in [your target language]."*
+
 ```logicscript
 @transaction
 FUNC transferFunds(fromId, toId, amount)
@@ -1954,6 +1988,8 @@ TransferResult PaymentService::transfer_funds(
 
 ## Parallel flow example
 
+> *Prompt: "Implement this LogicScript specification in [your target language]."*
+
 ```logicscript
 FLOW GenerateDashboard(userId)
   PARALLEL
@@ -2146,6 +2182,8 @@ DashboardResult DashboardService::generate_dashboard(const std::string& user_id)
 ### Order state machine
 
 ## Example
+
+> *Prompt: "Implement this LogicScript specification in [your target language]."*
 
 ```logicscript
 STATE Order
@@ -2477,6 +2515,8 @@ private:
 *Guide*
 
 A complete user authentication module demonstrating most LogicScript constructs working together. This example is suitable for passing directly to an AI code generator.
+
+> *Prompt: "Implement this LogicScript specification in [your target language]."*
 
 ```logicscript
 MODULE AuthService
