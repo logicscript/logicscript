@@ -6,7 +6,7 @@
 >
 > Technical specification and formal grammar: logicscript-reference.md
 >
-> Examples: logicscxript-examples.md
+> Examples: logicscript-examples.md
 
 ---
 
