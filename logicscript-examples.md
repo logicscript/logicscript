@@ -2,12 +2,23 @@
 
 *Version 1.0 · April 2026*
 
-> This document collects all LogicScript output examples: generated code in JavaScript (Node.js), Python, SQL, Java, Rust, and C++, plus a complete AuthService specification. For the language specification, syntax reference, and formal grammar, see **logicscript-reference.md**.
+> This document collects all LogicScript examples — from beginner-friendly power user specs through to complete multi-language code output. For the language specification and formal grammar, see **logicscript-reference.md**. For a plain-English guide to writing specs, see **logicscript-power-user-guide.md**.
 
 ---
 
 ## Contents
 
+- [Power user examples](#power-user-examples) *(start here if you are new)*
+  - [Greet a user](#1-greet-a-user)
+  - [Contact form submission](#2-contact-form-submission)
+  - [Book a meeting room](#3-book-a-meeting-room)
+  - [Submit an expense report](#4-submit-an-expense-report)
+  - [Publish a blog post](#5-publish-a-blog-post)
+  - [Reorder stock automatically](#6-reorder-stock-automatically)
+  - [Employee onboarding flow](#7-employee-onboarding-flow)
+  - [Invoice status machine](#8-invoice-status-machine)
+  - [Ticket support system](#9-ticket-support-system)
+  - [Monthly billing schedule](#10-monthly-billing-schedule)
 - [Output prompt template](#prompt-template)
 - [Output: JavaScript (Node.js)](#output-javascript-nodejs)
 - [Output: Python](#output-python)
@@ -21,6 +32,486 @@
   - [GenerateDashboard (parallel flow)](#generatedashboard-parallel-flow)
   - [Order state machine](#order-state-machine)
 - [Complete example: AuthService](#complete-example-authservice)
+
+---
+
+## Power user examples
+
+These examples are written for non-programmers. Each one is a complete, usable LogicScript specification — plain enough to read and write without a technical background, precise enough to hand directly to an AI for implementation.
+
+**How to use these:** Copy an example, adapt it to your situation, then paste it into an AI chat with the instruction: *"Implement this LogicScript specification in [your language or framework]."*
+
+---
+
+### 1. Greet a user
+
+The simplest possible spec — a function that takes a name and returns a greeting.
+
+```logicscript
+FUNC greet(name)
+  --- Returns a personalised greeting. ---
+
+  VALIDATE
+    name not empty
+
+  DO
+    message = "Hello, " + name + "! Welcome."
+
+  RETURN message
+  ON FAIL THROW ValidationError
+```
+
+**What this produces:** A simple function. If `name` is blank, it refuses and returns an error. Otherwise it returns the greeting string.
+
+---
+
+### 2. Contact form submission
+
+A contact form that validates the submission and sends it to the right team.
+
+```logicscript
+SHAPE ContactMessage
+  id        : UUID      required auto
+  name      : String    required min=2 max=100
+  email     : String    required
+  subject   : String    required max=200
+  body      : String    required min=10 max=5000
+  category  : Enum[general, sales, support, billing]  default=general
+  submittedAt : Timestamp  auto
+
+FUNC submitContactForm(name, email, subject, body, category)
+  --- Accepts a contact form submission and routes it to the right team. ---
+
+  VALIDATE
+    name not empty
+    email matches email pattern
+    subject not empty
+    body length >= 10
+    body length <= 5000
+
+  DO
+    message = ContactMessage.create(name, email, subject, body, category)
+    EMIT ContactFormSubmitted WITH message
+
+ON ContactFormSubmitted
+  send auto-reply to message.email confirming receipt
+  forward message to the team inbox for message.category
+  LOG "Contact form received from {message.email}"
+```
+
+**What this produces:** A validated contact form handler that auto-routes messages by category and sends a confirmation email to the sender.
+
+---
+
+### 3. Book a meeting room
+
+A booking system that checks availability before confirming a reservation.
+
+```logicscript
+SHAPE RoomBooking
+  id        : UUID      required auto
+  roomId    : UUID      required
+  userId    : UUID      required
+  title     : String    required
+  startTime : Timestamp required
+  endTime   : Timestamp required
+  attendees : Int       required min=1
+  createdAt : Timestamp auto
+
+FUNC bookRoom(roomId, userId, title, startTime, endTime, attendees)
+  --- Books a meeting room if it is available for the requested slot. ---
+
+  VALIDATE
+    roomId exists in Room
+    startTime is before endTime
+    endTime is after NOW
+    attendees > 0
+    attendees <= room.capacity
+    no existing booking for roomId overlaps with startTime to endTime
+
+  DO
+    booking = RoomBooking.create(roomId, userId, title, startTime, endTime, attendees)
+    EMIT RoomBooked WITH booking
+
+ON RoomBooked
+  send confirmation email to booking.userId with the booking details
+  add the booking to the room calendar
+  LOG "Room {booking.roomId} booked by {booking.userId} from {booking.startTime}"
+```
+
+**What this produces:** A booking function with overlap detection. If the room is already booked in that slot, the request is refused.
+
+---
+
+### 4. Submit an expense report
+
+An expense approval workflow with basic validation and manager notification.
+
+```logicscript
+SHAPE ExpenseReport
+  id          : UUID      required auto
+  employeeId  : UUID      required
+  title       : String    required
+  totalAmount : Float     required min=0
+  currency    : String    required default="GBP"
+  status      : Enum[draft, submitted, approved, rejected]  default=draft
+  submittedAt : Timestamp optional
+  reviewedBy  : UUID      optional
+  notes       : String    optional
+  createdAt   : Timestamp auto
+
+FUNC submitExpenseReport(reportId, employeeId)
+  --- Submits a draft expense report for manager approval. ---
+
+  VALIDATE
+    reportId exists in ExpenseReport
+    report.status IS draft
+    report.employeeId IS employeeId
+    report.totalAmount > 0
+    report has at least one expense line item attached
+
+  DO
+    report.status = submitted
+    report.submittedAt = NOW
+    managerId = look up employeeId's direct manager
+    EMIT ExpenseSubmitted WITH { reportId, employeeId, managerId }
+
+ON ExpenseSubmitted
+  send approval request to managerId
+  send submission confirmation to employeeId
+  LOG "Expense report {reportId} submitted by {employeeId}"
+```
+
+**What this produces:** An expense submission function. Draft reports can be submitted, which notifies the employee's manager and confirms receipt to the employee.
+
+---
+
+### 5. Publish a blog post
+
+A content publishing workflow with draft → review → published status tracking.
+
+```logicscript
+SHAPE BlogPost
+  id          : UUID      required auto
+  title       : String    required min=5 max=200
+  body        : String    required min=100
+  authorId    : UUID      required
+  slug        : String    required unique
+  status      : Enum[draft, review, published, archived]  default=draft
+  publishedAt : Timestamp optional
+  tags        : List<String>  optional
+  createdAt   : Timestamp auto
+  updatedAt   : Timestamp auto
+
+FUNC publishPost(postId, editorId)
+  --- Publishes a post that is ready for review. ---
+
+  VALIDATE
+    postId exists in BlogPost
+    post.status IS review
+    editorId has role editor OR admin
+    post.title not empty
+    post.body length >= 100
+
+  DO
+    post.status = published
+    post.publishedAt = NOW
+    EMIT PostPublished WITH post
+
+FUNC submitForReview(postId, authorId)
+  --- Moves a draft post into the review queue. ---
+
+  VALIDATE
+    postId exists in BlogPost
+    post.status IS draft
+    post.authorId IS authorId
+    post.title not empty
+    post.body length >= 100
+
+  DO
+    post.status = review
+    EMIT PostSubmittedForReview WITH post
+
+ON PostSubmittedForReview
+  notify all editors that a post is ready to review
+
+ON PostPublished
+  send notification to post.authorId confirming publication
+  update the site's RSS feed
+  LOG "Post published: {post.title}"
+```
+
+**What this produces:** A two-step publishing flow. Authors submit drafts for review; editors publish them. Each transition fires events that trigger notifications.
+
+---
+
+### 6. Reorder stock automatically
+
+An inventory rule that fires automatically when stock drops below a threshold.
+
+```logicscript
+SHAPE Product
+  id          : UUID    required auto
+  name        : String  required
+  sku         : String  required unique
+  stockCount  : Int     required default=0
+  reorderAt   : Int     required default=10
+  reorderQty  : Int     required default=50
+  supplierId  : UUID    required
+
+FUNC recordStockMovement(productId, quantityChange, reason)
+  --- Records a stock change (positive = stock in, negative = stock out). ---
+
+  VALIDATE
+    productId exists in Product
+    quantityChange not equals 0
+    new stock level would not go below 0
+
+  DO
+    product.stockCount = product.stockCount + quantityChange
+    LOG "Stock for {product.sku}: {quantityChange} units ({reason})"
+
+    IF product.stockCount <= product.reorderAt
+      EMIT LowStock WITH { productId, currentStock: product.stockCount }
+
+ON LowStock
+  TRIGGER PurchasingService.createPurchaseOrder(
+    productId,
+    supplierId,
+    quantity: product.reorderQty
+  )
+  ALERT purchasing-team
+  LOG "Reorder triggered for {product.sku}"
+```
+
+**What this produces:** An inventory function that checks the reorder threshold after every stock movement. When stock falls at or below the threshold, a purchase order is automatically created.
+
+---
+
+### 7. Employee onboarding flow
+
+A multi-step process that runs when a new employee joins.
+
+```logicscript
+FLOW OnboardNewEmployee(employeeId)
+  --- Runs all onboarding steps when HR activates a new employee record. ---
+
+  STEP createSystemAccounts
+    create an email account for the employee
+    create a Slack account
+    create an HR system login
+    set a temporary password and require change on first login
+
+  STEP assignEquipment
+    create an IT equipment request for the employee
+    EMIT EquipmentRequested WITH { employeeId }
+
+  STEP scheduleOrientation
+    find the next available orientation session with fewer than 20 attendees
+    add the employee to that session
+    send a calendar invite to the employee and their manager
+
+  STEP completeOnboarding
+    mark the employee record as onboarded
+    EMIT EmployeeOnboarded WITH { employeeId }
+    LOG "Onboarding complete for employee {employeeId}"
+
+ON EquipmentRequested
+  notify IT-team to prepare the equipment request
+
+ON EmployeeOnboarded
+  send a welcome email to the employee with first-day instructions
+  send a notification to their manager
+```
+
+**What this produces:** A sequential four-step onboarding process. Each step runs in order. Events trigger additional notifications to the IT team, manager, and the employee themselves.
+
+---
+
+### 8. Invoice status machine
+
+A status workflow that controls how an invoice moves through its lifecycle.
+
+```logicscript
+SHAPE Invoice
+  id            : UUID      required auto
+  number        : String    required unique
+  customerEmail : String    required
+  totalAmount   : Float     required min=0
+  status        : Enum[draft, sent, paid, overdue, cancelled]  default=draft
+  dueDate       : Timestamp required
+  sentAt        : Timestamp optional
+  paidAt        : Timestamp optional
+
+STATE Invoice
+  STATES  draft, sent, paid, overdue, cancelled
+
+  TRANSITION draft   -> sent     ON sendInvoice
+  TRANSITION sent    -> paid     ON markAsPaid
+  TRANSITION sent    -> overdue  ON dueDatePassed
+  TRANSITION overdue -> paid     ON markAsPaid
+  TRANSITION ANY     -> cancelled ON cancelInvoice
+    WHEN status NOT IN [paid]
+
+  ON ENTER sent
+    invoice.sentAt = NOW
+    EMIT InvoiceSent WITH invoice
+    LOG "Invoice {invoice.number} sent"
+
+  ON ENTER paid
+    invoice.paidAt = NOW
+    EMIT InvoicePaid WITH invoice
+    LOG "Invoice {invoice.number} marked as paid"
+
+  ON ENTER overdue
+    EMIT InvoiceOverdue WITH invoice
+
+  ON ENTER cancelled
+    LOG "Invoice {invoice.number} cancelled"
+
+ON InvoiceSent
+  send the invoice PDF to invoice.customerEmail
+
+ON InvoicePaid
+  TRIGGER AccountingService.recordPayment(invoice)
+  send a payment receipt to invoice.customerEmail
+
+ON InvoiceOverdue
+  send a polite overdue reminder to invoice.customerEmail
+  ALERT accounts-receivable-team
+
+SCHEDULE checkOverdueInvoices
+  AT "9:00 AM daily"
+  DO
+    overdue = all invoices WHERE status IS sent AND dueDate < TODAY
+    FOR EACH overdue invoice
+      trigger dueDatePassed transition for the invoice
+```
+
+**What this produces:** A complete invoice lifecycle with automatic overdue detection. A daily schedule checks for sent invoices past their due date and transitions them automatically.
+
+---
+
+### 9. Ticket support system
+
+A basic helpdesk ticket tracker with assignment and escalation.
+
+```logicscript
+SHAPE SupportTicket
+  id          : UUID      required auto
+  subject     : String    required max=200
+  description : String    required min=20
+  priority    : Enum[low, medium, high, urgent]  default=medium
+  status      : Enum[open, assigned, in_progress, resolved, closed]  default=open
+  customerId  : UUID      required
+  assignedTo  : UUID      optional
+  createdAt   : Timestamp auto
+  resolvedAt  : Timestamp optional
+
+FUNC createTicket(customerId, subject, description, priority)
+  --- Creates a new support ticket. ---
+
+  VALIDATE
+    subject not empty
+    description length >= 20
+    priority IS one of [low, medium, high, urgent]
+
+  DO
+    ticket = SupportTicket.create(customerId, subject, description, priority)
+    EMIT TicketCreated WITH ticket
+
+FUNC assignTicket(ticketId, agentId)
+  --- Assigns an open ticket to a support agent. ---
+
+  VALIDATE
+    ticketId exists in SupportTicket
+    ticket.status IS open OR assigned
+    agentId has role support-agent OR support-manager
+
+  DO
+    ticket.assignedTo = agentId
+    ticket.status = assigned
+    EMIT TicketAssigned WITH { ticketId, agentId }
+
+FUNC resolveTicket(ticketId, agentId, resolution)
+  --- Marks a ticket as resolved. ---
+
+  VALIDATE
+    ticketId exists in SupportTicket
+    ticket.assignedTo IS agentId
+    resolution not empty
+
+  DO
+    ticket.status = resolved
+    ticket.resolvedAt = NOW
+    EMIT TicketResolved WITH { ticketId, resolution }
+
+ON TicketCreated
+  send confirmation to ticket.customerId with the ticket number
+  IF ticket.priority IS urgent
+    ALERT support-manager immediately
+
+ON TicketAssigned
+  send notification to agentId with ticket details
+
+ON TicketResolved
+  send resolution summary to ticket.customerId
+  ask customer to rate their support experience
+
+POLICY EscalationPolicy
+  APPLIES TO SupportTicket WHERE priority IS urgent
+  REQUIRE resolution within 4 hours
+  ON EXCEED ALERT support-manager, escalate to next tier
+```
+
+**What this produces:** A support ticket system with creation, assignment, and resolution. Urgent tickets trigger immediate alerts and are subject to a 4-hour resolution policy.
+
+---
+
+### 10. Monthly billing schedule
+
+A recurring billing job that runs on the first of each month.
+
+```logicscript
+SHAPE Subscription
+  id          : UUID    required auto
+  customerId  : UUID    required
+  planName    : String  required
+  pricePerMonth : Float required min=0
+  status      : Enum[active, paused, cancelled]  default=active
+  billingEmail  : String required
+  nextBillingDate : Timestamp required
+
+SCHEDULE monthlyBilling
+  AT "first day of month 00:01 UTC"
+  DO
+    subscriptions = all Subscriptions WHERE status IS active
+      AND nextBillingDate <= TODAY
+
+    FOR EACH subscription
+      charge subscription.customerId for subscription.pricePerMonth
+      IF charge succeeded
+        subscription.nextBillingDate = first day of next month
+        send receipt to subscription.billingEmail
+        LOG "Billed {subscription.customerId} for {subscription.planName}"
+      IF charge failed
+        EMIT BillingFailed WITH { subscription, reason }
+
+ON BillingFailed
+  send payment failure notice to subscription.billingEmail
+  retry the charge after 3 days
+  IF charge fails 3 times in a row
+    set subscription.status = paused
+    ALERT billing-team
+    send final notice to subscription.billingEmail
+
+POLICY BillingRetry
+  APPLIES TO monthlyBilling
+  ALLOW 3 retry attempts PER subscription PER billing cycle
+  wait 3 days between attempts
+```
+
+**What this produces:** A monthly billing job that charges all active subscribers, sends receipts on success, and handles failures with automatic retries and escalation.
 
 ---
 
