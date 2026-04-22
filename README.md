@@ -2,7 +2,7 @@
 
 **Version 1.0**
 
-LogicScript is a prompt language for describing software logic to AI systems. It occupies the space between plain English (ambiguous, imprecise) and production code (over-specified, language-locked) — letting you communicate *what* a system should do without prescribing *how*.
+LogicScript is an AI generated prompt language for describing software logic to AI systems. It occupies the space between plain English (ambiguous, imprecise) and production code (over-specified, language-locked) — letting you communicate *what* a system should do without prescribing *how*.
 
 Give a LogicScript specification to an AI code generator, and it produces idiomatic output in any target language: TypeScript, Python, Java, Rust, SQL, C++, and more.
 
