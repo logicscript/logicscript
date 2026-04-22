@@ -181,6 +181,8 @@ LogicScript makes three intentional trade-offs:
 
 The simplest possible LogicScript specification — a function that prints a greeting — illustrates how even trivial logic maps cleanly to generated output.
 
+> *Prompt: "Implement this LogicScript in Python"*
+
 ### LogicScript specification
 
 ```
@@ -225,7 +227,9 @@ if __name__ == "__main__":
 
 ## TypeScript example
 
-The following LogicScript specification produces the TypeScript implementation below it when passed to an AI with the prompt: *"Implement this LogicScript in TypeScript (Node.js). Use Prisma for database access, bcryptjs for password hashing, and a simple EventEmitter for events."*
+The following LogicScript specification produces the TypeScript implementation below it when passed to an AI with the prompt
+
+> *Prompt: "Implement this LogicScript in TypeScript (Node.js). Use Prisma for database access, bcryptjs for password hashing, and a simple EventEmitter for events."*
 
 ### LogicScript specification
 
