@@ -4,9 +4,9 @@
 
 > This guide is for power users who want to write LogicScript specifications without a programming background. You do not need to know how to code. LogicScript is a structured way of describing *what* you want software to do — an AI handles the coding.
 >
-> Technical specification and formal grammar: [logicscript-reference.md]().
+> Technical specification and formal grammar: logicscript-reference.md
 >
-> Examples: [logicscript-examples.md]()
+> Examples: logicscxript-examples.md
 
 ---
 
