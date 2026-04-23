@@ -7,7 +7,7 @@ LogicScript is an AI generated, agnostic prompt language for describing software
 Give a LogicScript specification to an AI code generator, and it produces idiomatic output in any target language: TypeScript, Python, Java, Rust, SQL, C++, and more.
 
 ```
-Prompt: Create a prompt language for describing software logic to ai
+Prompt: "Create a prompt language for describing software logic to AI."
 ```
 
 ---
