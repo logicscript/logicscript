@@ -2,9 +2,13 @@
 
 **Version 1.0**
 
-LogicScript is an AI generated prompt language for describing software logic to AI systems. It occupies the space between plain English (ambiguous, imprecise) and production code (over-specified, language-locked) — letting you communicate *what* a system should do without prescribing *how*.
+LogicScript is an AI generated, agnostic prompt language for describing software logic to AI systems. It occupies the space between plain English (ambiguous, imprecise) and production code (over-specified, language-locked) — letting you communicate *what* a system should do without prescribing *how*.
 
 Give a LogicScript specification to an AI code generator, and it produces idiomatic output in any target language: TypeScript, Python, Java, Rust, SQL, C++, and more.
+
+```
+Prompt: Create a prompt language for describing software logic to ai
+```
 
 ---
 
@@ -111,13 +115,13 @@ FUNC example(x)       -- top-level keyword
 
 All LogicScript keywords are uppercase. Identifiers use camelCase. Type names use PascalCase.
 
-| Convention | Example |
-|------------|---------|
-| Keywords | `MODULE`, `FUNC`, `VALIDATE`, `EMIT` |
-| Module and shape names | `AuthService`, `UserProfile` |
-| Function and variable names | `createUser`, `userId` |
-| Event names | `UserCreated`, `OrderPlaced` |
-| Field names | `createdAt`, `passwordHash` |
+| Convention                  | Example                                      |
+| --------------------------- | -------------------------------------------- |
+| Keywords                    | `MODULE`, `FUNC`, `VALIDATE`, `EMIT` |
+| Module and shape names      | `AuthService`, `UserProfile`             |
+| Function and variable names | `createUser`, `userId`                   |
+| Event names                 | `UserCreated`, `OrderPlaced`             |
+| Field names                 | `createdAt`, `passwordHash`              |
 
 ### Comments
 
@@ -155,25 +159,25 @@ LogicScript makes three intentional trade-offs:
 
 - **Intentionally incomplete.** LogicScript describes intent. The AI infers sensible implementation defaults.
 - **Indentation over syntax.** Structure is expressed through indentation — no braces, semicolons, or end keywords.
-- **Declarative over imperative.** Describe outcomes and constraints, not steps. Reserve the `DO` block for side effects that require explicit ordering.
+- **Declarative over imperative.** Describe outcomes and constraints, not steps. Reserve the`DO` block for side effects that require explicit ordering.
 
 ---
 
 ## Language building blocks
 
-| Keyword | Purpose |
-|---------|---------|
-| `MODULE` | Named service boundary with public entry points and imports |
-| `SHAPE` | Typed data structures with field-level constraints |
-| `FUNC` | Functions with validate, do, return, and on-fail blocks |
-| `FLOW` | Ordered multi-step operations with optional parallelism |
-| `GUARD` | Reusable access-control blocks |
-| `POLICY` | Cross-cutting rules for rate limits, retention, and more |
-| `ON` / `EMIT` | Event subscriptions and emissions for async decoupling |
-| `STATE` | State machines with transitions and enter/exit hooks |
-| `QUERY` | Named data-retrieval operations with filtering and ordering |
-| `SCHEDULE` | Cron-style recurring jobs |
-| `@annotation` | Metadata for caching, retries, deprecation, observability |
+| Keyword           | Purpose                                                     |
+| ----------------- | ----------------------------------------------------------- |
+| `MODULE`        | Named service boundary with public entry points and imports |
+| `SHAPE`         | Typed data structures with field-level constraints          |
+| `FUNC`          | Functions with validate, do, return, and on-fail blocks     |
+| `FLOW`          | Ordered multi-step operations with optional parallelism     |
+| `GUARD`         | Reusable access-control blocks                              |
+| `POLICY`        | Cross-cutting rules for rate limits, retention, and more    |
+| `ON` / `EMIT` | Event subscriptions and emissions for async decoupling      |
+| `STATE`         | State machines with transitions and enter/exit hooks        |
+| `QUERY`         | Named data-retrieval operations with filtering and ordering |
+| `SCHEDULE`      | Cron-style recurring jobs                                   |
+| `@annotation`   | Metadata for caching, retries, deprecation, observability   |
 
 ---
 
@@ -469,5 +473,5 @@ export async function sessionCleanup(): Promise<void> {
 
 ## Further reading
 
-- Full language reference: see `logicscript-docs.html`
+- Full language reference: see`logicscript-docs.html`
 - Keyword index, formal grammar, and complete examples are included in the reference documentation.
