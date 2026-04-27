@@ -1,8 +1,8 @@
-# LogicScript: Power User Guide
+# LogicScript: User Guide
 
 *Version 1.0 · April 2026*
 
-> This guide is for power users who want to write LogicScript prompts without a programming background. You do not need to know how to code. LogicScript is a structured way of describing *what* you want software to do — an AI handles the coding.
+> LogicScript is a structured way of describing *what* you want software to do — an AI handles the coding. You do not need to know how to code. Just use the LogicScript keywords to describe core logic and standard natual languge prompts for everything else.
 >
 > Technical specification and formal grammar: logicscript-reference.md
 >
@@ -12,24 +12,60 @@
 
 ## Contents
 
-- [What is LogicScript?](#what-is-logicscript)
-- [How it works](#how-it-works)
-- [Writing your first prompt](#writing-your-first-prompt)
-- [Building blocks at a glance](#building-blocks-at-a-glance)
-- [Describing data: SHAPE](#describing-data-shape)
-- [Describing actions: FUNC](#describing-actions-func)
-- [Describing processes: FLOW](#describing-processes-flow)
-- [Making decisions: IF / ELSE](#making-decisions-if--else)
-- [Checking inputs: VALIDATE](#checking-inputs-validate)
-- [Access control: GUARD and ALLOW / DENY](#access-control-guard-and-allow--deny)
-- [System-wide rules: POLICY](#system-wide-rules-policy)
-- [Finding records: QUERY](#finding-records-query)
-- [Reacting to events: ON and EMIT](#reacting-to-events-on-and-emit)
-- [Tracking status: STATE](#tracking-status-state)
-- [Scheduled tasks: SCHEDULE](#scheduled-tasks-schedule)
-- [Performance hints: Annotations](#performance-hints-annotations)
-- [Tips for better prompts](#tips-for-better-prompts)
-- [Quick reference card](#quick-reference-card)
+- [LogicScript: User Guide](#logicscript-user-guide)
+  - [Contents](#contents)
+  - [What is LogicScript?](#what-is-logicscript)
+    - [The key idea](#the-key-idea)
+  - [How it works](#how-it-works)
+  - [Writing your first prompt](#writing-your-first-prompt)
+  - [Building blocks at a glance](#building-blocks-at-a-glance)
+  - [Describing data: SHAPE](#describing-data-shape)
+    - [Field types](#field-types)
+    - [Field rules (constraints)](#field-rules-constraints)
+    - [Example](#example)
+  - [Describing actions: FUNC](#describing-actions-func)
+    - [VALIDATE — pre-flight checks](#validate--pre-flight-checks)
+    - [DO — the steps](#do--the-steps)
+    - [ON FAIL — error handling](#on-fail--error-handling)
+    - [A complete FUNC example](#a-complete-func-example)
+  - [Describing processes: FLOW](#describing-processes-flow)
+    - [Sequential flow](#sequential-flow)
+    - [Parallel flow](#parallel-flow)
+  - [Making decisions: IF / ELSE](#making-decisions-if--else)
+  - [Checking inputs: VALIDATE](#checking-inputs-validate)
+    - [Common patterns](#common-patterns)
+    - [Plain English is always fine](#plain-english-is-always-fine)
+  - [Access control: GUARD and ALLOW / DENY](#access-control-guard-and-allow--deny)
+    - [GUARD — reusable access rules](#guard--reusable-access-rules)
+    - [ALLOW / DENY — inline permission rules](#allow--deny--inline-permission-rules)
+  - [System-wide rules: POLICY](#system-wide-rules-policy)
+  - [Finding records: QUERY](#finding-records-query)
+    - [QUERY clauses](#query-clauses)
+  - [Reacting to events: ON and EMIT](#reacting-to-events-on-and-emit)
+    - [EMIT — fire an event](#emit--fire-an-event)
+    - [ON — react to an event](#on--react-to-an-event)
+  - [Tracking status: STATE](#tracking-status-state)
+    - [Structure](#structure)
+    - [ON ENTER — hooks](#on-enter--hooks)
+    - [Reading a state machine](#reading-a-state-machine)
+  - [Scheduled tasks: SCHEDULE](#scheduled-tasks-schedule)
+    - [Timing options](#timing-options)
+  - [Performance hints: Annotations](#performance-hints-annotations)
+    - [Examples](#examples)
+  - [Tips for better prompts](#tips-for-better-prompts)
+    - [Do mix plain English and LogicScript](#do-mix-plain-english-and-logicscript)
+    - [Keep each FUNC focused](#keep-each-func-focused)
+    - [Name things clearly](#name-things-clearly)
+    - [Add doc comments](#add-doc-comments)
+    - [Be explicit about failures](#be-explicit-about-failures)
+    - [Annotate for safety when money is involved](#annotate-for-safety-when-money-is-involved)
+  - [Quick reference card](#quick-reference-card)
+    - [Structure keywords](#structure-keywords)
+    - [Logic keywords](#logic-keywords)
+    - [Access control](#access-control)
+    - [Data and events](#data-and-events)
+    - [Status and scheduling](#status-and-scheduling)
+    - [Common annotations](#common-annotations)
 
 ---
 
