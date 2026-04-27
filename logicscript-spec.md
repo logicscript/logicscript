@@ -2,7 +2,7 @@
 
 **Version 1.0**
 
-This document is a complete, concise specification of LogicScript — a prompt language for describing software logic to AI systems. Reference this document when implementing a LogicScript prompt to understand syntax, keywords, types, and mapping rules. Reference this document using it's url when creating your own logicscript prompt.
+This document is a complete, concise specification of LogicScript — a prompt language for describing software logic to AI systems. Reference this document in your prompt so the AI clearly understands the syntax, keywords, types, and mapping rules.
 
 ---
 
