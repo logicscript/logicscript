@@ -2,13 +2,9 @@
 
 *Version 1.0 · April 2026*
 
-> This document collects all LogicScript examples — from beginner-friendly power user prompts through to complete multi-language code output. For the language specification and formal grammar, see **logicscript-reference.md**. For a plain-English guide to writing prompts, see **logicscript-power-user-guide.md**.
-
----
-
 ## Contents
 
-- [Power user examples](#power-user-examples) *(start here if you are new)*
+- [Power user examples](#power-user-examples)*(start here if you are new)*
   - [Greet a user](#1-greet-a-user)
   - [Contact form submission](#2-contact-form-submission)
   - [Book a meeting room](#3-book-a-meeting-room)
@@ -564,18 +560,18 @@ JavaScript output targets Node.js with ES modules and `async`/`await`. `SHAPE` b
 
 ## Mapping conventions
 
-| LogicScript | JavaScript (Node.js) |
-| --- | --- |
-| SHAPE | JSDoc `@typedef` or TypeScript `interface`; fields become object properties |
-| FUNC | `async function` export |
-| VALIDATE | Guard `if` statements that `throw` before any side effects |
-| DO | Sequential `await` calls inside the function body |
-| ON FAIL THROW | Named class extending `Error`, thrown from catch or guard |
-| EMIT … WITH | `eventBus.emit('EventName', payload)` |
-| ON [event] | `eventBus.on('EventName', handler)` |
-| PARALLEL + WAIT all | `await Promise.all([...])` |
-| @transaction | Database client transaction callback (for example, `db.$transaction()`) |
-| @cached | In-memory `Map`, Redis, or a memoize wrapper |
+| LogicScript         | JavaScript (Node.js)                                                            |
+| ------------------- | ------------------------------------------------------------------------------- |
+| SHAPE               | JSDoc `@typedef` or TypeScript `interface`; fields become object properties |
+| FUNC                | `async function` export                                                       |
+| VALIDATE            | Guard `if` statements that `throw` before any side effects                  |
+| DO                  | Sequential `await` calls inside the function body                             |
+| ON FAIL THROW       | Named class extending `Error`, thrown from catch or guard                     |
+| EMIT … WITH        | `eventBus.emit('EventName', payload)`                                         |
+| ON [event]          | `eventBus.on('EventName', handler)`                                           |
+| PARALLEL + WAIT all | `await Promise.all([...])`                                                    |
+| @transaction        | Database client transaction callback (for example,`db.$transaction()`)        |
+| @cached             | In-memory `Map`, Redis, or a memoize wrapper                                  |
 
 ## Example: createUser
 
@@ -685,18 +681,18 @@ Python output follows idiomatic Python 3.11+ conventions. `SHAPE` becomes a `@da
 
 ## Mapping conventions
 
-| LogicScript | Python |
-| --- | --- |
-| SHAPE | `@dataclass` with typed fields; `Enum[…]` becomes `enum.Enum` |
-| FUNC | `def` or `async def` with type hints |
-| VALIDATE | `if … raise` guards before any side effects |
-| DO | Sequential statements or `await` calls |
-| ON FAIL THROW | Custom exception class extending `Exception` |
-| EMIT … WITH | `event_bus.emit('event_name', payload)` |
-| ON [event] | Handler registered with `event_bus.on('event_name', fn)` |
-| PARALLEL + WAIT all | `await asyncio.gather(...)` |
-| @transaction | `with db.begin():` context manager (SQLAlchemy or similar) |
-| @cached | `functools.lru_cache`, `cachetools`, or Redis |
+| LogicScript         | Python                                                               |
+| ------------------- | -------------------------------------------------------------------- |
+| SHAPE               | `@dataclass` with typed fields; `Enum[…]` becomes `enum.Enum` |
+| FUNC                | `def` or `async def` with type hints                             |
+| VALIDATE            | `if … raise` guards before any side effects                       |
+| DO                  | Sequential statements or `await` calls                             |
+| ON FAIL THROW       | Custom exception class extending `Exception`                       |
+| EMIT … WITH        | `event_bus.emit('event_name', payload)`                            |
+| ON [event]          | Handler registered with `event_bus.on('event_name', fn)`           |
+| PARALLEL + WAIT all | `await asyncio.gather(...)`                                        |
+| @transaction        | `with db.begin():` context manager (SQLAlchemy or similar)         |
+| @cached             | `functools.lru_cache`, `cachetools`, or Redis                    |
 
 ## Example: createUser
 
