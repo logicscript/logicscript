@@ -498,10 +498,3 @@ export async function sessionCleanup(): Promise<void> {
   logger.info(`Purged ${count} expired sessions`);
 }
 ```
-
----
-
-## Further reading
-
-- Full language reference: see`logicscript-docs.html`
-- Keyword index, formal grammar, and complete examples are included in the reference documentation.
